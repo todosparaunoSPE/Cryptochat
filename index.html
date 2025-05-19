@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoChat Ultra</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .sidebar {
+            background-color: #f0f2f6;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .main {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .divider {
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+        }
+        .radio-options {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .radio-options label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        button.primary {
+            background-color: #2c3e50;
+        }
+        .result {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .columns {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .column {
+            flex: 1;
+        }
+        .whatsapp-button {
+            display: inline-block;
+            background-color: #25D366;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            width: 100%;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .whatsapp-button.secondary {
+            background-color: #128C7E;
+        }
+        .warning {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .tip {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h1>📌 Información</h1>
+        <div class="divider"></div>
+        <h3>🧑‍💻 Creado por:</h3>
+        <p><strong>jahoperi</strong></p>
+        <div class="divider"></div>
+        <h3>👀 Visitas totales:</h3>
+        <p id="visit-counter"><strong>Cargando...</strong></p>
+        <div class="divider"></div>
+        <h3>📝 Instrucciones:</h3>
+        <p>
+            1. 🔘 Selecciona la operación deseada<br>
+            2. ⌨️ Introduce tu texto<br>
+            3. 🖱️ Haz clic en el botón correspondiente<br>
+            4. 📋 Copia el texto generado<br>
+            5. 📱 Comparte por WhatsApp
+        </p>
+    </div>
+
+    <div class="main">
+        <h1>🔠 CryptoChat Ultra 🏛️</h1>
+        <h3>Generador y Traductor de Código 🔐</h3>
+        <p><em>¡Crea mensajes secretos con tus amigos usando CryptoChat Ultra!</em> 🤫✨</p>
+        
+        <div class="divider"></div>
+        
+        <div class="radio-options">
+            <label>
+                <input type="radio" name="option" value="generate" checked> 🔤 Generar código
+            </label>
+            <label>
+                <input type="radio" name="option" value="translate"> 🔍 Traducir código a español
+            </label>
+        </div>
+        
+        <div id="generate-section">
+            <h3>✏️ Introduce el texto en español para convertir a código:</h3>
+            <textarea id="spanish-text" rows="6" placeholder="Escribe aquí tu texto en español..." title="Puedes escribir cualquier mensaje que quieras convertir a código"></textarea>
+            <button id="generate-btn" class="primary">✨ Generar Código ✨</button>
+            
+            <div id="generate-result" style="display: none;">
+                <h3>🎉 Resultado:</h3>
+                <div class="result" id="generated-code"></div>
+                <textarea id="generated-code-copy" rows="4" readonly></textarea>
+                <p><em>💡 ¡Ahora puedes enviar este código secreto a tus amigos!</em></p>
+                
+                <div class="divider"></div>
+                <h3>📱 Compartir por WhatsApp:</h3>
+                <div class="columns">
+                    <div class="column">
+                        <a id="whatsapp-code-link" class="whatsapp-button" target="_blank">📤 1° Envía el código secreto</a>
+                    </div>
+                    <div class="column">
+                        <a id="whatsapp-app-link" class="whatsapp-button secondary" target="_blank">🔗 2° Envía el enlace para descifrar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="translate-section" style="display: none;">
+            <h3>🔍 Introduce el código para traducir a español:</h3>
+            <textarea id="greek-text" rows="6" placeholder="Escribe aquí tu texto en código..." title="Pega aquí el texto en griego que recibiste"></textarea>
+            <button id="translate-btn" class="primary">🔎 Traducir a Español 🔍</button>
+            
+            <div id="translate-result" style="display: none;">
+                <h3>🎯 Resultado:</h3>
+                <div class="result" id="translated-text"></div>
+                <textarea id="translated-text-copy" rows="4" readonly></textarea>
+                <p><em>🥳 ¡Mensaje descifrado con éxito!</em></p>
+                
+                <div class="divider"></div>
+                <h3>📱 Compartir por WhatsApp:</h3>
+                <div class="columns">
+                    <div class="column">
+                        <a id="whatsapp-translation-link" class="whatsapp-button" target="_blank">📤 Enviar Traducción</a>
+                    </div>
+                    <div class="column">
+                        <a id="whatsapp-app-link2" class="whatsapp-button secondary" target="_blank">🔗 Enlace para cifrar/descifrar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="divider"></div>
+        <h3>🎮 ¡Diviértete creando mensajes secretos con tus amigos!</h3>
+        <div class="tip">
+            <p>🌟 <em>Pro tip: Usa este código para pasar notas en clase sin que el profesor entienda</em> 😉</p>
+        </div>
+    </div>
+
+    <script>
+        // Mapeo de letras griegas a español
+        const griego_a_espanol = {
+            'α': 'a', 'β': 'b', 'γ': 'g', 'δ': 'd', 'ε': 'e',
+            'ζ': 'z', 'η': 'h', 'θ': 'th', 'ι': 'i', 'κ': 'k',
+            'λ': 'l', 'μ': 'm', 'ν': 'n', 'ξ': 'x', 'ο': 'o',
+            'π': 'p', 'ρ': 'r', 'σ': 's', 'ς': 's', 'τ': 't',
+            'υ': 'y', 'φ': 'ph', 'χ': 'ch', 'ψ': 'ps', 'ω': 'w',
+            'Α': 'A', 'Β': 'B', 'Γ': 'G', 'Δ': 'D', 'Ε': 'E',
+            'Ζ': 'Z', 'Η': 'H', 'Θ': 'Th', 'Ι': 'I', 'Κ': 'K',
+            'Λ': 'L', 'Μ': 'M', 'Ν': 'N', 'Ξ': 'X', 'Ο': 'O',
+            'Π': 'P', 'Ρ': 'R', 'Σ': 'S', 'Τ': 'T', 'Υ': 'Y',
+            'Φ': 'Ph', 'Χ': 'Ch', 'Ψ': 'Ps', 'Ω': 'W'
+        };
+
+        // Mapeo inverso (español a griego)
+        const espanol_a_griego = {};
+        for (const [key, value] of Object.entries(griego_a_espanol)) {
+            espanol_a_griego[value] = key;
+        }
+
+        // Función para traducir de griego a español
+        function traducir_griego_a_espanol(texto) {
+            const resultado = [];
+            let i = 0;
+            const n = texto.length;
+            
+            while (i < n) {
+                let encontrado = false;
+                
+                // Primero intentamos con 2 caracteres
+                if (i + 1 < n) {
+                    const dosCaracteres = texto.substring(i, i+2);
+                    if (griego_a_espanol[dosCaracteres]) {
+                        resultado.push(griego_a_espanol[dosCaracteres]);
+                        i += 2;
+                        encontrado = true;
+                    }
+                }
+                
+                // Si no encontramos con 2 caracteres, probamos con 1
+                if (!encontrado && i < n) {
+                    const unCaracter = texto[i];
+                    if (griego_a_espanol[unCaracter]) {
+                        resultado.push(griego_a_espanol[unCaracter]);
+                    } else {
+                        resultado.push(unCaracter);
+                    }
+                    i += 1;
+                }
+            }
+            
+            return resultado.join('');
+        }
+
+        // Función para traducir de español a griego
+        function traducir_espanol_a_griego(texto) {
+            const resultado = [];
+            let i = 0;
+            const n = texto.length;
+            
+            while (i < n) {
+                let encontrado = false;
+                
+                // Primero intentamos con 2 caracteres (para dígrafos como 'ph', 'th', etc.)
+                if (i + 1 < n) {
+                    const dosCaracteres = texto.substring(i, i+2).toLowerCase();
+                    if (espanol_a_griego[dosCaracteres]) {
+                        // Mantenemos la capitalización original
+                        const original = texto.substring(i, i+2);
+                        let traducido;
+                        
+                        if (original === original.toUpperCase()) {
+                            traducido = espanol_a_griego[dosCaracteres].toUpperCase();
+                        } else if (original[0] === original[0].toUpperCase() && original[1] === original[1].toLowerCase()) {
+                            traducido = espanol_a_griego[dosCaracteres][0].toUpperCase() + 
+                                        (espanol_a_griego[dosCaracteres].length > 1 ? espanol_a_griego[dosCaracteres].substring(1) : '');
+                        } else {
+                            traducido = espanol_a_griego[dosCaracteres];
+                        }
+                        
+                        resultado.push(traducido);
+                        i += 2;
+                        encontrado = true;
+                    }
+                }
+                
+                // Si no encontramos con 2 caracteres, probamos con 1
+                if (!encontrado && i < n) {
+                    const unCaracter = texto[i].toLowerCase();
+                    if (espanol_a_griego[unCaracter]) {
+                        // Mantenemos la capitalización original
+                        if (texto[i] === texto[i].toUpperCase() && texto[i] !== texto[i].toLowerCase()) {
+                            resultado.push(espanol_a_griego[unCaracter].toUpperCase());
+                        } else {
+                            resultado.push(espanol_a_griego[unCaracter]);
+                        }
+                    } else {
+                        resultado.push(texto[i]);
+                    }
+                    i += 1;
+                }
+            }
+            
+            return resultado.join('');
+        }
+
+        // Función para crear enlace de WhatsApp
+        function crear_enlace_whatsapp(mensaje) {
+            const texto_codificado = encodeURIComponent(mensaje);
+            return `https://wa.me/?text=${texto_codificado}`;
+        }
+
+        // Mostrar animación de traducción
+        async function mostrar_animacion(elemento) {
+            elemento.textContent = "🔍 Traduciendo";
+            for (let i = 0; i < 3; i++) {
+                await new Promise(resolve => setTimeout(resolve, 300));
+                elemento.textContent += ".";
+            }
+            await new Promise(resolve => setTimeout(resolve, 300));
+            elemento.textContent = "✅ ¡Listo!";
+        }
+
+        // Manejar el cambio entre las opciones
+        document.querySelectorAll('input[name="option"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'generate') {
+                    document.getElementById('generate-section').style.display = 'block';
+                    document.getElementById('translate-section').style.display = 'none';
+                } else {
+                    document.getElementById('generate-section').style.display = 'none';
+                    document.getElementById('translate-section').style.display = 'block';
+                }
+            });
+        });
+
+        // Manejar el botón de generar código
+        document.getElementById('generate-btn').addEventListener('click', function() {
+            const textoOriginal = document.getElementById('spanish-text').value.trim();
+            const resultadoDiv = document.getElementById('generate-result');
+            
+            if (textoOriginal) {
+                const textoGriego = traducir_espanol_a_griego(textoOriginal);
+                
+                document.getElementById('generated-code').textContent = textoGriego;
+                document.getElementById('generated-code-copy').value = textoGriego;
+                
+                // Crear enlaces de WhatsApp
+                const mensaje1 = `\n${textoGriego}`;
+                const mensaje2 = "🤫 ¿Quieres traducir el código secreto que te ha llegado? 🏛️\nVisita:\n" + window.location.href;
+                
+                document.getElementById('whatsapp-code-link').href = crear_enlace_whatsapp(mensaje1);
+                document.getElementById('whatsapp-app-link').href = crear_enlace_whatsapp(mensaje2);
+                
+                resultadoDiv.style.display = 'block';
+                
+                // Efecto visual (simplificado)
+                resultadoDiv.style.animation = 'fadeIn 0.5s';
+                
+                // Mostrar mensaje de éxito
+                alert("🎉 ¡Código generado con éxito!");
+            } else {
+                alert("⚠️ Por favor introduce un texto para generar el código.");
+            }
+        });
+
+        // Manejar el botón de traducir código
+        document.getElementById('translate-btn').addEventListener('click', async function() {
+            const textoGriego = document.getElementById('greek-text').value.trim();
+            const resultadoDiv = document.getElementById('translate-result');
+            const animacionElement = document.createElement('div');
+            
+            if (textoGriego) {
+                // Mostrar animación
+                resultadoDiv.innerHTML = '<h3>🎯 Resultado:</h3>';
+                resultadoDiv.appendChild(animacionElement);
+                resultadoDiv.style.display = 'block';
+                
+                await mostrar_animacion(animacionElement);
+                
+                // Traducir el texto
+                const textoTraducido = traducir_griego_a_espanol(textoGriego);
+                
+                // Mostrar resultados
+                resultadoDiv.innerHTML = '<h3>🎯 Resultado:</h3>';
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'result';
+                resultDiv.id = 'translated-text';
+                resultDiv.textContent = textoTraducido;
+                resultadoDiv.appendChild(resultDiv);
+                
+                const textarea = document.createElement('textarea');
+                textarea.id = 'translated-text-copy';
+                textarea.rows = 4;
+                textarea.readOnly = true;
+                textarea.value = textoTraducido;
+                resultadoDiv.appendChild(textarea);
+                
+                resultadoDiv.innerHTML += '<p><em>🥳 ¡Mensaje descifrado con éxito!</em></p>';
+                
+                // Crear enlaces de WhatsApp
+                const mensaje1 = `🔓 Traducción del código secreto:\n\n🏛️ Original: ${textoGriego}\n\n🇪🇸 Traducción: ${textoTraducido}`;
+                const mensaje2 = "🔤 ¿Quieres generar o traducir código griego? 🏛️\nVisita:\n" + window.location.href;
+                
+                document.getElementById('whatsapp-translation-link').href = crear_enlace_whatsapp(mensaje1);
+                document.getElementById('whatsapp-app-link2').href = crear_enlace_whatsapp(mensaje2);
+                
+                // Mostrar la sección de compartir
+                resultadoDiv.innerHTML += `
+                    <div class="divider"></div>
+                    <h3>📱 Compartir por WhatsApp:</h3>
+                    <div class="columns">
+                        <div class="column">
+                            <a id="whatsapp-translation-link" class="whatsapp-button" target="_blank">📤 Enviar Traducción</a>
+                        </div>
+                        <div class="column">
+                            <a id="whatsapp-app-link2" class="whatsapp-button secondary" target="_blank">🔗 Enlace para cifrar/descifrar</a>
+                        </div>
+                    </div>
+                `;
+                
+                // Actualizar los enlaces
+                document.getElementById('whatsapp-translation-link').href = crear_enlace_whatsapp(mensaje1);
+                document.getElementById('whatsapp-app-link2').href = crear_enlace_whatsapp(mensaje2);
+            } else {
+                alert("⚠️ Por favor introduce un código para traducir.");
+            }
+        });
+
+        // Simular contador de visitas (en un entorno real, esto se haría con un backend)
+        document.getElementById('visit-counter').textContent = Math.floor(Math.random() * 1000) + 1;
+    </script>
+</body>
+</html>
